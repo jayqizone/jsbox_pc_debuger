@@ -11,7 +11,7 @@ JSBox 的桌面端日志打印工具，基于 Node Debugging Inspector，感谢 
 
 - 引入模块
 
-  将仓库目录 `jsboxMoudle` 下的 [socketLogger.js](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/jsboxModule/socketLogger.js) 导入 JSBox 的 _ 脚本模块_ 目录下（方便下次使用）
+  将仓库目录 `jsboxMoudle` 下的 [socketLogger.js](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/jsboxModule/socketLogger.js) 导入 JSBox 的 _脚本模块_ 目录下（方便下次使用）
 
 - 使用模块
 
@@ -63,9 +63,9 @@ const socketLogger = require('socketLogger');
 - `$.xxx.yyy = value` 或 `$.xxx.yyy.set(value)`，会发送赋值语句消息
 - VS Code 控制台不响应 `console.clear()` 清屏，如果使用 macOS 系统，则可以先将 _清除控制台_ 绑定快捷键 _CTRL + L_，`jsbox_pc_logger` 会执行一段 AppleScript 发送键盘事件触发此快捷键
 
-![](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/images/get.jpg)
+![获取属性值](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/images/get.jpg)
 
-![](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/images/set.jpg)
+![给属性赋值](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/images/set.jpg)
 
 ### JSBox 参数
 
