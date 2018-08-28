@@ -1,6 +1,6 @@
 # jsbox\_pc\_logger
 
-JSBox 的桌面端日志打印工具，基于 Node Debugging Inspector。
+JSBox 的桌面端日志打印工具，基于 Node Debugging Inspector，感谢 @Fndroid
 
 ## 要求
 
@@ -11,7 +11,7 @@ JSBox 的桌面端日志打印工具，基于 Node Debugging Inspector。
 
 - 引入模块
 
-  将仓库目录 `jsboxMoudle` 下的 [socketLogger.js](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/jsboxModule/socketLogger.js) 导入 JSBox 的`脚本模块`目录下（方便下次使用）
+  将仓库目录 `jsboxMoudle` 下的 [socketLogger.js](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/jsboxModule/socketLogger.js) 导入 JSBox 的 _ 脚本模块_ 目录下（方便下次使用）
 
 - 使用模块
 
@@ -19,7 +19,7 @@ JSBox 的桌面端日志打印工具，基于 Node Debugging Inspector。
 
 ```javascript
 const socketLogger = require('socketLogger');
-'init' in socketLogger && socketLogger.init('192.168.xxx.xxx'); // 桌面端IP地址，不能使用 localhost
+'init' in socketLogger && socketLogger.init('192.168.xxx.xxx'); // 桌面端 IP 地址，不能使用 localhost
 ```
 
 ## 调试环境
@@ -63,9 +63,9 @@ const socketLogger = require('socketLogger');
 - `$.xxx.yyy = value` 或 `$.xxx.yyy.set(value)`，会发送赋值语句消息
 - VS Code 控制台不响应 `console.clear()` 清屏，如果使用 macOS 系统，则可以先将 _清除控制台_ 绑定快捷键 _CTRL + L_，`jsbox_pc_logger` 会执行一段 AppleScript 发送键盘事件触发此快捷键
 
-![](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/image/get.jpg)
+![](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/images/get.jpg)
 
-![](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/image/set.jpg)
+![](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/images/set.jpg)
 
 ### JSBox 参数
 
