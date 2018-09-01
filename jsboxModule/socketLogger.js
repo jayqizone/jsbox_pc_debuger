@@ -4,8 +4,8 @@ module.exports = {
         socket = $socket.new(`ws://${address}:${port}`);
         socket.listen({
             didOpen: (sock) => {
+                origin.log.call(console, 'Debugger attached.');
                 clear && socket.send(JSON.stringify({ type: 'clear' }));
-                origin.log.call(console, "Debugger attached.");
             },
             didFail: (sock, error) => {
                 origin.error.call(console, `Debugger detached With Error: ${error.localizedDescription}`);
@@ -17,12 +17,12 @@ module.exports = {
                 origin.log.call(console, `Inspect: ${cmd}`);
                 if (debug) {
                     try {
-                        let result = new Function(`return eval(\`` + $addin.compile(cmd) + `\`)`)();
-                        socket.send(JSON.stringify({ type: 'log', args: [result] }));
+                        let result = new Function('return eval(`' + $addin.compile(cmd) + '`)')();
                         origin.log.call(console, result);
+                        socket.send(JSON.stringify({ type: 'log', args: [result] }));
                     } catch (error) {
-                        socket.send(JSON.stringify({ type: 'error', args: [error.message] }));
                         origin.error.call(console, error.message);
+                        socket.send(JSON.stringify({ type: 'error', args: [error.message] }));
                     }
                 }
             },
@@ -30,17 +30,17 @@ module.exports = {
                 origin.log.call(console, `Received: ${data}`);
             },
             didReceivePing: (sock, data) => {
-                origin.log.call(console, "WebSocket received ping");
+                origin.log.call(console, 'WebSocket received ping');
             },
             didReceivePong: (sock, data) => {
-                origin.log.call(console, "WebSocket received pong");
+                origin.log.call(console, 'WebSocket received pong');
             }
         });
         socket.open();
 
         ['log', 'info', 'warn', 'error', 'clear'].forEach(type => console[type] = function (...args) {
-            debug && socket.send(JSON.stringify({ type, args }));
             origin[type].apply(console, args);
+            debug && socket.send(JSON.stringify({ type, args }));
         });
     }
 }

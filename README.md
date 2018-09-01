@@ -61,6 +61,7 @@ const socketLogger = require('socketLogger');
 - `$` 本身即为 ws.send 方法，所以可以用来发送消息（JSBox 环境会 eval 解析执行并返回结果）
 - `$.xxx.yyy(args).zzz.get` 以 `get` 结尾进行链式调用，会发送 `$.` 与 `.get` 之间的字符串消息
 - `$.xxx.yyy = value` 或 `$.xxx.yyy.set(value)`，会发送赋值语句消息
+- 注意：链式调用时 `__proto__` 请用 `_proto_` 代替
 - VS Code 控制台不响应 `console.clear()` 清屏，如果使用 macOS 系统，则可以先将 _清除控制台_ 绑定快捷键 _CTRL + L_，`jsbox_pc_logger` 会执行一段 AppleScript 发送键盘事件触发此快捷键
 
 ![获取属性值](https://raw.githubusercontent.com/jayqizone/jsbox_pc_debuger/master/images/get.jpg)
