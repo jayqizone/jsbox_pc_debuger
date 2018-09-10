@@ -19,7 +19,7 @@ module.exports = {
                     try {
                         let result = new Function('return eval(`' + $addin.compile(cmd) + '`)')();
                         origin.log.call(console, result);
-                        socket.send(JSON.stringify({ type: 'log', args: [result] }));
+                        socket.send(JSON.stringify({ type: 'log', args: preSerialize(result) }));
                     } catch (error) {
                         origin.error.call(console, error.message);
                         socket.send(JSON.stringify({ type: 'error', args: [error.message] }));
@@ -40,7 +40,22 @@ module.exports = {
 
         ['log', 'info', 'warn', 'error', 'clear'].forEach(type => console[type] = function (...args) {
             origin[type].apply(console, args);
-            debug && socket.send(JSON.stringify({ type, args }));
+            debug && socket.send(JSON.stringify({ type, args: preSerialize(...args) }));
         });
     }
+}
+
+function preSerialize(...args) {
+    return args.map(arg => {
+        if (arg instanceof Array) {
+            return preSerialize(...arg);
+        }
+        if (arg instanceof Function) {
+            return `${arg}`;
+        }
+        if (arg instanceof Object && /\[object (?!Object)/.test(arg.toString())) {
+            return arg.runtimeValue().$description().rawValue();
+        }
+        return arg;
+    })
 }

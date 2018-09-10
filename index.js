@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 const Exec = require('child_process').exec;
 
-const wss = new WebSocket.Server({ port: 44555 })
+const wss = new WebSocket.Server({ port: 44555, perMessageDeflate: true })
 wss.on('connection', (ws, req) => {
     ws.on('message', message => {
         let data = JSON.parse(message);
@@ -19,30 +19,43 @@ wss.on('connection', (ws, req) => {
         }
     });
 
+    ws.on('close', (code, reason) => {
+        console.info('Client Detached.')
+    });
+
     $ = cmd => ws.send(cmd) || '-'.repeat(78);
     $.__proto__ = chain();
 })
 
 function chain(props = []) {
     // 用于截获链式调用时有函数调用的形式，$.xxx.yyy(args).zzz，拼装参数
-    function func(...args) {
+    let func = (...args) => {
         args = args || [];
         let name = props.pop();
-        if (name === 'set') {
-            let setValue = typeof args[0] === 'string' ? args[0] : JSON.stringify(args[0])
-            let cmd = props.reduce((obj, prop) => `${obj}.${prop}`) + ' = ' + setValue;
-            return $(cmd);
-        } else {
-            return chain([...props, name + '(' + args.map(arg => JSON.stringify(arg)).join(',') + ')']);
+        let cmd;
+        switch (name) {
+            case 'set':
+                let setValue = typeof args[0] === 'string' ? args[0] : JSON.stringify(args[0]);
+                cmd = props.reduce((obj, prop) => `${obj}.${prop}`) + ' = ' + setValue;
+                break;
+            case '$props':
+                let target = typeof args[0] === 'string' ? args[0] : JSON.stringify(args[0]);
+                cmd = name + `(${target})`;
+                break;
+            case '$l10n':
+                cmd = name + `('${args[0]}')`;
+                break;
         }
+        return cmd ? $(cmd) : chain([...props, name + '(' + args.map(arg => JSON.stringify(arg)).join(',') + ')']);
     }
+
     func.__proto__ = new Proxy({ props }, {
         get: function (target, key, receiver) {
             if (key === '__proto__') {
                 return;
             }
             if (key === 'get') {
-                let cmd = props.reduce((obj, prop) => `${obj}.${prop}`);
+                let cmd = props.reduce((obj, prop) => Number.isNaN(Number(prop)) ? `${obj}.${prop}` : `${obj}[${prop}]`);
                 return $(cmd);
             } else {
                 if (key === '_proto_') {
@@ -61,10 +74,11 @@ function chain(props = []) {
             return;
         }
     });
+
     return func;
 }
 
-// VS Code 控制台不支持 console.clear，可以先给清空控制台绑定快捷键 CTRL + L 然后通过 AppleScript 发达键盘事件触发
+// VS Code 控制台不支持 console.clear，可以先给清空控制台绑定快捷键 CTRL + L 然后通过 AppleScript 发送键盘事件触发
 function vscode_clear(pid) {
     let script = `osascript -l JavaScript <<"EOF"\n
 ObjC.import('Carbon');
